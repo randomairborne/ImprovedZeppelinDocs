@@ -158,7 +158,7 @@ Initial configurations and entries in the database need to be set up to use the 
     - Modify YOUR_ID X2; replace localhost with domain|ip as applicable
 5. `INSERT INTO configs (id, `key`, config, is_active, edited_by) VALUES (2, "guild-GUILD_ID", "{\"prefix\": \"!\", \"levels\": {\"YOUR_ID\": 100}, \"plugins\": { \"utility\": {}}}", true, "YOUR_ID");`
     - Modify GUILD_ID, YOUR_ID X2
-6. `INSERT INTO api_permissions (guild_id, target_id, type, permissions) VALUES (GUILD_ID, YOUR_ID, "USER", "OWNER", null);`
+6. `INSERT INTO api_permissions (guild_id, target_id, type, permissions) VALUES (GUILD_ID, YOUR_ID, "USER", "OWNER");`
     - Modify GUILD_ID, YOUR_ID
 7. `SET GLOBAL time_zone = '+0:00';`
 8. `exit;`

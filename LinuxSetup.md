@@ -149,13 +149,15 @@ We'll fill in these env files later. First we need to set up the database
 
 Initial configurations and entries in the database need to be set up to use the bot on the first server:
 
+(As you can see below, the `key` item is not enclosed in ``, this is a formatting issue, just note when you run these commands, that the key item is enclosed in them.)
+
 1. `sudo mariadb`
     - or `sudo mariadb -p` as applicable
 2. `use zeppelin;`
 3. `INSERT INTO allowed_guilds (id, name, icon, owner_id) VALUES ("SERVER_ID", "SERVER_NAME", null, "OWNER_ID");`
     - Modify SERVER_ID, SERVER_NAME, OWNER_ID
-4. `INSERT INTO configs (id, `key`, config, is_active, edited_by) VALUES (1, "global", "{\"prefix\": \"!\", \"owners\": [\"YOUR_ID\"]}", true, "YOUR_ID");`
-    - Modify YOUR_ID X2
+4. `INSERT INTO configs (id, `key`, config, is_active, edited_by) VALUES (1, "global", "{\"prefix\": \"!\", \"url\": \"http://localhost:8800\" ,\"owners\": [\"YOUR_ID\"]}", true, "YOUR_ID");`
+    - Modify YOUR_ID X2; replace localhost with domain|ip as applicable
 5. `INSERT INTO configs (id, `key`, config, is_active, edited_by) VALUES (2, "guild-GUILD_ID", "{\"prefix\": \"!\", \"levels\": {\"YOUR_ID\": 100}, \"plugins\": { \"utility\": {}}}", true, "YOUR_ID");`
     - Modify GUILD_ID, YOUR_ID X2
 6. `INSERT INTO api_permissions (guild_id, target_id, type, permissions) VALUES (GUILD_ID, YOUR_ID, "USER", "OWNER");`

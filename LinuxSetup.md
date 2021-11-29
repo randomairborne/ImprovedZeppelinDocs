@@ -18,8 +18,8 @@ https://github.com/Dragory/ZeppelinBot/pull/232/files
 ## Install Necessary Software
 
 1. `sudo apt -y install mariadb-server git nano curl build-essential nginx`
-    - Mariadb for database (not MySQL)
-    - Git for copying the bot code and future updates
+    - Mariadb for the database (not MySQL)
+    - Git for copying the bot code and for allowing you to get future updates
     - Nano for editing text files
     - Curl for downloading certain installation scripts
     - build-essential is needed for building the bot
@@ -43,17 +43,17 @@ Now we need to get NVM to read the Node version and install the correct Node ver
 2. `nvm install`
 
 ## Set up Github SSH Access
-Building the bot will access various Github repositories and download code from different places, code that the bot depends on. In order to do that, we need to set up a Github account if you don't have one yet, and set up SSH access via a key pair so your server can access these Github repositories as needed during the installation process.
+Building the bot will include having to access various Github repositories and download code from different places; code that the bot depends on. In order to do that, we need to set up a Github account - if you don't have one yet, just visit [Github](https://github.com/signup) and go from there - and set up SSH access via a key pair so your server can access these Github repositories as needed during the installation process.
 
 1. `ssh-keygen -t ed25519 -C "your_email@example.com"` (substituting your email address in the quotes; keep the quotes)
 2. `eval "$(ssh-agent)"`
 3. `ssh-add ~/.ssh/id_ed25519`
 4. `cat ~/.ssh/id_ed25519.pub` Copy all the text from the output
 5. Install the key pair to Github:
-  1. Log in to github (create an account if you need to)
-  2. Click on profile picture on top right and click on Settings
+  1. Log in to github (see the above step if you need to create an account)
+  2. Click on your profile picture on top right and click on Settings
   3. On the left, click on SSH and GPG Keys, then click New SSH Key
-  4. Paste text (from step 4) into Key box and name it. Then click the green save button.
+  4. Paste the text (from step 4) into the key box and name it. Then click the green save button.
 6. Back in the SSH shell, `ssh -T git@github.com`
 
 ## Install and Build the Bot and API
@@ -78,8 +78,8 @@ We'll fill in these env files later. First we need to set up the database
 ### Initial Database Setup
 
 1. `sudo mariadb`
-    - If you have a root passsword set, it won't let you in. Run `sudo mariadb -p` instead and type in the password when asked. It won't display, so make sure you type it correctly then just press enter.
-2. Check what version of Mariadb is running. **If it is 10.2 or below, you need to upgrade Mariadb before you can continue**
+    - If you have a root passsword set, it won't let you login. Run `sudo mariadb -p` instead and type in the password when asked. It won't display, so make sure you type it correctly then just press enter.
+2. Check what version of Mariadb is running, this should be in the text that's logged as soon as you login. **If it is 10.2 or below, you need to upgrade Mariadb before you can continue**
     - `exit;`
     - `sudo apt remove mariadb-server`
     - `curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup`
@@ -108,7 +108,7 @@ We'll fill in these env files later. First we need to set up the database
     - Copy **Client ID** and **Client Secret**
     - On the bottom, click the green **Save** button.
 4. On the left, click on **Bot** and add a bot.
-    - Copy the token
+    - Copy the token, **do not share this token with anyone. It allows people to login to your bot!**
     - Under **Privileged Gateway Intents**, enable all 3 toggles.
 5. Invite the bot to the server but do not try to run any commands.
     - https://discord.com/api/oauth2/authorize?client_id=CLIENT-ID-HERE&permissions=8&scope=bot
@@ -141,7 +141,7 @@ We'll fill in these env files later. First we need to set up the database
 
 1. `npm run build`
     - Make sure there are no errors. If there are errors, copy the entire output (not just the ERR parts) and ask in the Zeppelin Discord server.
-2. Run migrations. This will actually set up the database structure:
+2. Run migrations. This will set up the database structure and all the neccessary tables. If you skip this part the bot will throw errors:
     - For a development instance (for testing and development): `npm run migrate-dev`
     - For a production instance (for use on actual servers): `npm run migrate-prod`
 
@@ -158,7 +158,7 @@ Initial configurations and entries in the database need to be set up to use the 
     - Modify YOUR_ID X2
 5. `INSERT INTO configs (id, `key`, config, is_active, edited_by) VALUES (2, "guild-GUILD_ID", "{\"prefix\": \"!\", \"levels\": {\"YOUR_ID\": 100}, \"plugins\": { \"utility\": {}}}", true, "YOUR_ID");`
     - Modify GUILD_ID, YOUR_ID X2
-6. `INSERT INTO api_permissions (guild_id, target_id, type, permissions) VALUES (GUILD_ID, YOUR_ID, "USER", "OWNER", null);`
+6. `INSERT INTO api_permissions (guild_id, target_id, type, permissions) VALUES (GUILD_ID, YOUR_ID, "USER", "OWNER");`
     - Modify GUILD_ID, YOUR_ID
 7. `SET GLOBAL time_zone = '+0:00';`
 8. `exit;`
@@ -191,7 +191,7 @@ To start the bot in development, run `npm run watch`. This will start build and 
       - As before, make sure there is no slash at the end.
 5. If you are setting up a production bot: `npm run build`
 6. If you are setting up a development bot: `npm run watch`
-    - This will build and set up a temporary webserver that hosts the dashboard.
+    - This will build and set up a temporary webserver that hosts the dashboard, but only accessible locally.
 
 ## Set up Nginx for Production Bots
 
@@ -215,6 +215,6 @@ server {
 3. In Nano, **right click** to paste the text. Then press **Ctrl-X** then **Y** then **Enter** to save and close the file.
 4. `sudo ln -s /etc/nginx/sites-available/zeppelin /etc/nginx/sites-enabled/zeppelin`
 5. `sudo systemctl restart nginx`
-    - Make sure there are no errors. If there are, run `systemctl journal nginx.service` (or whatever command it tells you to run) to view the error log and ask in the Zeppelin Discord server.
+    - Make sure there are no errors. If there are, run `systemctl journal nginx.service` (or whatever command it tells you to run, it'll list a command to run if it fails to restart) to view the error log and ask in the Zeppelin Discord server.
 
-That's it! The bot should be fully functional. The dashboard should be accessible at http://[localhost|domain|ip]:1234. If there are any issues, or to see sample configs, please visit the Zeppelin Discord Server
+That's it! The bot should be fully functional. The dashboard should be accessible at http://[localhost|domain|ip]:1234. If there are any issues, or to see sample configs, please visit the Zeppelin Discord Server.
